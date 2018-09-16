@@ -4,7 +4,7 @@ import Main from '../Main/Main.jsx';
 
 
 const App = () => (
-  <div>
+  <div className="flex-container">
     <Header />
     <Main />
   </div>

@@ -1,7 +1,9 @@
 import React from 'react';
 
 const Header = () => (
-  <h1>Choice Words</h1>
+  <nav className="titlebar">
+    <h3>Choice Words</h3>
+  </nav>
 )
 
 export default Header;
