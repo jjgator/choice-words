@@ -1,8 +1,16 @@
 import React from 'react';
+import Button from '../Button/Button.jsx';
 
-const Player = () => {
+const Player = (props) => {
   return (
-    <div>Player things here.</div>
+    <div className="player">
+      <p>username here</p>
+      <form>
+        <input name="word">
+        </input>
+        <Button buttonText="Enter"/>
+      </form>
+    </div>
   )
 }
 

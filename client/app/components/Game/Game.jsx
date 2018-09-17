@@ -13,7 +13,7 @@ const Game = (props) => {
           <Letters />
         }
       </div>
-      <div className="players-container">
+      <div className="players-wrapper">
         <Player />
         <Player />
       </div>

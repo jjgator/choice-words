@@ -1,0 +1,11 @@
+.player {
+  display: flex;
+  flex: 1; /* makes each player box the same size/height */
+  flex-direction: column; /* makes the content in the player box go from top to bottom */
+  margin: 35px;
+	padding: 20px;
+	border: 1px solid blue;
+	height: 400px;
+	width: 200px;
+	background-color: #ccc;
+}
