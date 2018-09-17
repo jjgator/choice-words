@@ -1,11 +1,13 @@
 import React from 'react';
 import Button from '../Button/Button.jsx';
+import Game from '../Game/Game.jsx';
 
 class Main extends React.Component {
   constructor() {
     super();
     this.state = {
-      firstUser: ""
+      firstUser: null,
+      gameStarted: false
     };
     this.startGame = this.startGame.bind(this);
   }
@@ -17,17 +19,20 @@ class Main extends React.Component {
 
   render () {
     return (
+      this.state.firstUser === null ? 
       <div>
         <form onSubmit={this.startGame}>
           <label>Enter your username:
-            <input name="username" defaultValue={this.state.firstUser}></input><br/>
+            <input name="username">
+            </input><br/>
           </label>
           <Button 
             type="start-game-button"
             buttonText="Start New Game"
          />
         </form>
-      </div>
+      </div> :
+      <Game gameStarted={this.state.gameStarted}/>
     )
   }
 }
