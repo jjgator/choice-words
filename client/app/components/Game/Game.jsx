@@ -10,7 +10,7 @@ const Game = (props) => {
         {props.gameStarted === false ?
           <Button buttonText="Start Game"/>
           : 
-          <Letters />
+          <Letters gameLetters={props.gameLetters}/>
         }
       </div>
       <div className="players-wrapper">

@@ -1,8 +1,11 @@
 import React from 'react';
+import Letter from '../Letter/Letter.jsx';
 
-const Letters = () => {
+const Letters = (props) => {
   return (
-    <div>Map through array of random letters here.</div>
+    <div>{props.gameLetters.map((letter, i) => {
+      return <Letter letter={letter} key={i}/>
+    })}</div>
   )
 }
 
