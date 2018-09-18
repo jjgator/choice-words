@@ -5,7 +5,7 @@ const Player = (props) => {
   return (
     <div className="player">
       <p>username here</p>
-      <form>
+      <form onSubmit={props.wordSubmit}>
         <input name="word">
         </input>
         <Button buttonText="Enter"/>

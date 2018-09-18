@@ -8,14 +8,14 @@ const Game = (props) => {
     <div>
       <div className="game-header">
         {props.gameStarted === false ?
-          <Button buttonText="Start Game"/>
-          : 
           <Letters gameLetters={props.gameLetters}/>
+          : 
+          <Button buttonText="Start Game"/>
         }
       </div>
       <div className="players-wrapper">
-        <Player />
-        <Player />
+        <Player wordSubmit={props.wordSubmit} />
+        <Player wordSubmit={props.wordSubmit} />
       </div>
     </div>
   )
