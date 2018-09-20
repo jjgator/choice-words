@@ -14,8 +14,16 @@ const Game = (props) => {
         }
       </div>
       <div className="players-wrapper">
-        <Player wordSubmit={props.wordSubmit} />
-        <Player wordSubmit={props.wordSubmit} />
+        <Player 
+          wordSubmit={props.wordSubmit} 
+          errorMsg={props.errorMsg}
+          submittedWords={props.submittedWords}
+        />
+        <Player 
+          wordSubmit={props.wordSubmit} 
+          errorMsg={props.errorMsg}
+          submittedWords={props.submittedWords}
+        />
       </div>
     </div>
   )

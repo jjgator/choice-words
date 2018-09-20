@@ -10,6 +10,12 @@ const Player = (props) => {
         </input>
         <Button buttonText="Enter"/>
       </form>
+      <span className="errmsg">{props.errorMsg}</span>
+      <div>{
+        props.submittedWords.map((word, i) => {
+          return <div key={i}><span>{word + ' '}</span><br/></div>
+        })
+      }</div>
     </div>
   )
 }

@@ -8,7 +8,9 @@ class Main extends React.Component {
     this.state = {
       firstUser: null,
       gameStarted: false,
-      gameLetters: []
+      gameLetters: [],
+      errorMsg: '',
+      submittedWords: []
     };
     this.startGame = this.startGame.bind(this);
     this.getGameLetters = this.getGameLetters.bind(this);
@@ -56,17 +58,26 @@ class Main extends React.Component {
 
   handleWordSubmit (e) {
     e.preventDefault();
-    const submittedWord = e.target.word.value;
+    const submittedWord = e.target.word.value.toLowerCase();
+    const tooShortMsg = "Your word must contain at least two letters. Please try again."
+    const wrongCharMsg = "You may only use the provided letters. Please try again."
+    const notUniqueCharMsg = "You can use each letter only once. Please try again."
+    const notUniqueWordMsg = "You've already submitted that word. Please try again."
 
     //check if string is empty or too short
     if (submittedWord.length <= 1) {
-      console.log("your word must contain at least two letters");
+      this.setState({errorMsg: tooShortMsg});
+    // check only given letters are used
     } else if (!this.hasOnlyGivenChars(submittedWord)) {
-      console.log("you may only use the provided letters");
+      this.setState({errorMsg: wrongCharMsg});
+    // check that each letter is used only once
     } else if (!this.isUnique(submittedWord)) {
-      console.log("you can use each letter only once");
+      this.setState({errorMsg: notUniqueCharMsg});
+    // check to see if word was already submitted
+    } else if (this.state.submittedWords.includes(submittedWord)) {
+      this.setState({errorMsg: notUniqueWordMsg});
     } else {
-      console.log(submittedWord + " was submitted.")
+      this.setState({submittedWords: [...this.state.submittedWords, submittedWord]});
     }
   }
 
@@ -89,6 +100,8 @@ class Main extends React.Component {
         gameStarted={this.state.gameStarted}
         gameLetters={this.state.gameLetters}
         wordSubmit={this.handleWordSubmit}
+        errorMsg={this.state.errorMsg}
+        submittedWords={this.state.submittedWords}
       />
     )
   }
