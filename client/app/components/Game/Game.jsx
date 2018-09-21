@@ -18,11 +18,13 @@ const Game = (props) => {
           wordSubmit={props.wordSubmit} 
           errorMsg={props.errorMsg}
           submittedWords={props.submittedWords}
+          username={props.playerOne}
         />
         <Player 
           wordSubmit={props.wordSubmit} 
           errorMsg={props.errorMsg}
           submittedWords={props.submittedWords}
+          username={props.playerTwo}
         />
       </div>
     </div>

@@ -1,16 +1,19 @@
 import React from 'react';
 import Button from '../Button/Button.jsx';
 import Game from '../Game/Game.jsx';
+import firebase from '../../firebase.js';
 
 class Main extends React.Component {
   constructor() {
     super();
     this.state = {
-      firstUser: null,
+      playerOne: null,
+      playerTwo: null,
       gameStarted: false,
       gameLetters: [],
       errorMsg: '',
-      submittedWords: []
+      submittedWords: [],
+      gameID: null
     };
     this.startGame = this.startGame.bind(this);
     this.getGameLetters = this.getGameLetters.bind(this);
@@ -20,17 +23,36 @@ class Main extends React.Component {
     this.hasOnlyGivenChars = this.hasOnlyGivenChars.bind(this);
   }
 
-  startGame (e) {
+  async startGame (e) {
     e.preventDefault();
-    this.setState(
-      {
-        firstUser: e.target.username.value,
-        gameLetters: this.getGameLetters()
+    const user = e.target.username.value;
+
+    // check for empty input
+    if (user.length > 0) {
+      // if no users are "logged in", user is the first player
+      // refactor: check DB instead to see if first user is "logged in"
+      if (this.state.playerOne === null) {
+        const gamesRef = firebase.database().ref('games');
+        const game = {
+          playerOne: user
+        }
+        const newGame = await gamesRef.push(game);
+        const gameID = newGame.key;
+        this.setState({
+          playerOne: user,
+          gameLetters: this.getGameLetters(),
+          gameID: gameID
+        });
+      // user is the second player
+      // } else {
+      //   // add second user to DB
       }
-    );
+    } else {
+      alert("You must enter a username to play the game.");
+    }
   }
 
-  // generates a new set of unique, random letters for each game
+  // generates a new set of random, unique letters for each game
   getGameLetters () {
     const consonants = [
       'b','c','d','f','g','h','j','k','l',
@@ -59,6 +81,7 @@ class Main extends React.Component {
   handleWordSubmit (e) {
     e.preventDefault();
     const submittedWord = e.target.word.value.toLowerCase();
+
     const tooShortMsg = "Your word must contain at least two letters. Please try again."
     const wrongCharMsg = "You may only use the provided letters. Please try again."
     const notUniqueCharMsg = "You can use each letter only once. Please try again."
@@ -76,37 +99,44 @@ class Main extends React.Component {
     // check to see if word was already submitted
     } else if (this.state.submittedWords.includes(submittedWord)) {
       this.setState({errorMsg: notUniqueWordMsg});
+    // submit valid word
     } else {
-      this.setState({submittedWords: [...this.state.submittedWords, submittedWord]});
+      this.setState({
+        submittedWords: [...this.state.submittedWords, submittedWord],
+        errorMsg: ''
+      });
     }
   }
 
   render () {
     return (
-      this.state.firstUser === null ? 
-      <div>
-        <form onSubmit={this.startGame}>
-          <label>Enter your username:
-            <input name="username">
-            </input><br/>
-          </label>
-          <Button 
-            type="start-game-button"
-            buttonText="Start New Game"
-         />
-        </form>
-      </div> :
-      <Game 
-        gameStarted={this.state.gameStarted}
-        gameLetters={this.state.gameLetters}
-        wordSubmit={this.handleWordSubmit}
-        errorMsg={this.state.errorMsg}
-        submittedWords={this.state.submittedWords}
-      />
+      this.state.playerOne === null 
+      ? <div>
+          <form onSubmit={this.startGame}>
+            <label>Enter your username:
+              <input name="username">
+              </input><br/>
+            </label>
+            <Button 
+              type="start-game-button"
+              buttonText="Start New Game"
+           />
+          </form>
+        </div>
+      : <Game 
+          gameStarted={this.state.gameStarted}
+          gameLetters={this.state.gameLetters}
+          wordSubmit={this.handleWordSubmit}
+          errorMsg={this.state.errorMsg}
+          submittedWords={this.state.submittedWords}
+          playerOne={this.state.playerOne}
+          playerTwo={this.state.playerTwo}
+        />
     )
   }
 
-  // helper function for getGameLetters
+  // helper function for getGameLetters,
+  // generates random index for choosing game letters
   getRandomIndex (max) {
     return Math.floor(Math.random() * Math.floor(max));
   }
