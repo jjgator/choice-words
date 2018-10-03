@@ -43,7 +43,7 @@ class Main extends React.Component {
           gameLetters: this.getGameLetters(),
           gameID: gameID
         });
-      // user is the second player
+      // else if user is the second player
       // } else {
       //   // add second user to DB
       }
@@ -109,6 +109,7 @@ class Main extends React.Component {
   }
 
   render () {
+    console.log(this.props);
     return (
       this.state.playerOne === null 
       ? <div>

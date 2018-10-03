@@ -3,6 +3,8 @@ import Button from '../Button/Button.jsx';
 import Letters from '../Letters/Letters.jsx';
 import Player from '../Player/Player.jsx';
 
+// todo: switch gameStarted components after testing complete
+
 const Game = (props) => {
   return (
     <div>
