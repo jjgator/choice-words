@@ -27,6 +27,7 @@ const Game = (props) => {
           errorMsg={props.errorMsg}
           submittedWords={props.submittedWords}
           username={props.playerTwo}
+          gameID={props.gameID}
         />
       </div>
     </div>

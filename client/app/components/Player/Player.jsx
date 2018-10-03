@@ -20,8 +20,9 @@ const Player = (props) => {
           })
         }</div>
       </div>
-    : <div className="player">
-        Waiting on second player to join. To invite a player, share this link: 
+    : <div className="player wait">
+        {'Waiting on second player to join. To invite a player, share this link: '
+         + path.join(window.location.href, '/player2/' + props.gameID)}
       </div>
   )
 }

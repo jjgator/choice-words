@@ -26,12 +26,12 @@ class Main extends React.Component {
   async startGame (e) {
     e.preventDefault();
     const user = e.target.username.value;
-
     // check for empty input
     if (user.length > 0) {
       // if no users are "logged in", user is the first player
       // refactor: check DB instead to see if first user is "logged in"
-      if (this.state.playerOne === null) {
+      // if (this.state.playerOne === null) {
+      if (this.props.match.params.game_id === undefined) {
         const gamesRef = firebase.database().ref('games');
         const game = {
           playerOne: user
@@ -44,8 +44,12 @@ class Main extends React.Component {
           gameID: gameID
         });
       // else if user is the second player
-      // } else {
-      //   // add second user to DB
+      } else {
+        // add second user to DB
+        const gameRef = firebase.database().ref(`/games/${this.props.match.params.game_id}`);
+        gameRef.update({
+          playerTwo: user
+        })
       }
     } else {
       alert("You must enter a username to play the game.");
@@ -109,7 +113,6 @@ class Main extends React.Component {
   }
 
   render () {
-    console.log(this.props);
     return (
       this.state.playerOne === null 
       ? <div>
@@ -132,6 +135,7 @@ class Main extends React.Component {
           submittedWords={this.state.submittedWords}
           playerOne={this.state.playerOne}
           playerTwo={this.state.playerTwo}
+          gameID={this.state.gameID}
         />
     )
   }
