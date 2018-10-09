@@ -7,13 +7,14 @@ class Main extends React.Component {
   constructor() {
     super();
     this.state = {
+      gameID: null,
       playerOne: null,
       playerTwo: null,
-      gameStarted: false,
+      loggedIn: false,
       gameLetters: [],
       errorMsg: '',
       submittedWords: [],
-      gameID: null
+      gameStarted: false
     };
     this.startGame = this.startGame.bind(this);
     this.getGameLetters = this.getGameLetters.bind(this);
@@ -23,34 +24,61 @@ class Main extends React.Component {
     this.hasOnlyGivenChars = this.hasOnlyGivenChars.bind(this);
   }
 
-  async startGame (e) {
-    e.preventDefault();
-    const user = e.target.username.value;
-    // check for empty input
-    if (user.length > 0) {
-      // if no users are "logged in", user is the first player
-      // refactor: check DB instead to see if first user is "logged in"
-      // if (this.state.playerOne === null) {
-      if (this.props.match.params.game_id === undefined) {
-        const gamesRef = firebase.database().ref('games');
-        const game = {
-          playerOne: user
-        }
-        const newGame = await gamesRef.push(game);
-        const gameID = newGame.key;
+  async componentDidMount () {
+    let gameID = this.props.match.params.game_id || null;
+    // if gameID does not exist, user must be first player
+    if (gameID === null) {
+      // create new game
+      const gamesRef = firebase.database().ref('games');
+      const game = {gameLetters: this.getGameLetters()};
+      const createNewGame = await gamesRef.push(game);
+      gameID = createNewGame.key;
+      const newGameRef = firebase.database().ref(`/games/${gameID}`);
+      newGameRef.on('value', snapshot => {
+        const newGame = snapshot.val();
         this.setState({
-          playerOne: user,
-          gameLetters: this.getGameLetters(),
+          playerOne: newGame.playerOne || null,
+          playerTwo: newGame.playerTwo || null,
+          gameLetters: newGame.gameLetters,
           gameID: gameID
         });
-      // else if user is the second player
-      } else {
-        // add second user to DB
-        const gameRef = firebase.database().ref(`/games/${this.props.match.params.game_id}`);
-        gameRef.update({
-          playerTwo: user
-        })
-      }
+      });
+    // if gameID exists, user must be second player
+    } else {
+      // pull game data from db
+      const currentGameRef = firebase.database().ref(`/games/${gameID}`);
+      currentGameRef.on('value', snapshot => {
+        const currentGame = snapshot.val();
+        this.setState({
+          playerOne: currentGame.playerOne,
+          playerTwo: currentGame.playerTwo || null,
+          gameLetters: currentGame.gameLetters,
+          gameID: gameID
+        });
+      });
+    }
+  }
+
+  startGame (e) {
+    e.preventDefault();
+    const user = e.target.username.value;
+    const gameID = this.state.gameID;
+    const gameRef = firebase.database().ref(`/games/${gameID}`);
+    // check for empty input
+    if (user.length > 0) {
+      firebase.database().ref(`/games/${gameID}/playerOne`).once('value', snapshot => {
+        if (snapshot.exists()) {
+          gameRef.update({
+            playerTwo: user
+          });
+          this.setState({loggedIn: true});
+        } else {
+          gameRef.update({
+            playerOne: user
+          });
+          this.setState({loggedIn: true});
+        }
+      });
     } else {
       alert("You must enter a username to play the game.");
     }
@@ -114,7 +142,7 @@ class Main extends React.Component {
 
   render () {
     return (
-      this.state.playerOne === null 
+      this.state.loggedIn === false 
       ? <div>
           <form onSubmit={this.startGame}>
             <label>Enter your username:
