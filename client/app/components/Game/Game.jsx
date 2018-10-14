@@ -17,15 +17,17 @@ const Game = (props) => {
       </div>
       <div className="players-wrapper">
         <Player 
+          player="player1"
           wordSubmit={props.wordSubmit} 
           errorMsg={props.errorMsg}
-          submittedWords={props.submittedWords}
+          submittedWords={props.playerOneWords}
           username={props.playerOne}
         />
         <Player 
+          player="player2"
           wordSubmit={props.wordSubmit} 
           errorMsg={props.errorMsg}
-          submittedWords={props.submittedWords}
+          submittedWords={props.playerTwoWords}
           username={props.playerTwo}
           gameID={props.gameID}
         />

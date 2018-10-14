@@ -6,7 +6,7 @@ import path from 'path';
 const Player = (props) => {
   return (
     props.username !== null 
-    ? <div className="player">
+    ? <div className={props.player}>
         <p>{props.username}</p>
         <form onSubmit={props.wordSubmit}>
           <input name="word">
