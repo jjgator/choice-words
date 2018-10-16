@@ -8,14 +8,19 @@ class Main extends React.Component {
     super();
     this.state = {
       gameID: null,
-      playerOne: null,
-      playerTwo: null,
       loggedIn: false,
       gameLetters: [],
-      errorMsg: '',
-      playerOneWords: [],
-      playerTwoWords: [],
-      gameStarted: false
+      gameStarted: false,
+      playerOne: {
+        username: null,
+        submittedWords: [],
+        errorMsg: ''
+      },
+      playerTwo: {
+        username: null,
+        submittedWords: [],
+        errorMsg: ''
+      }
     };
     this.createOrJoinGame = this.createOrJoinGame.bind(this);
     this.getGameLetters = this.getGameLetters.bind(this);
@@ -42,9 +47,9 @@ class Main extends React.Component {
         const newGame = snapshot.val();
 
         this.setState({
-          playerOne: newGame.playerOne || null,
-          playerTwo: newGame.playerTwo || null,
-          gameLetters: newGame.gameLetters,
+          playerOne: {...this.state.playerOne, username: newGame.playerOne || null},
+          playerTwo: {...this.state.playerTwo, username: newGame.playerTwo || null},
+          gameLetters: newGame.gameLetters
         });
       });
     // if gameID exists, user must be second player
@@ -56,8 +61,8 @@ class Main extends React.Component {
         const currentGame = snapshot.val();
 
         this.setState({
-          playerOne: currentGame.playerOne,
-          playerTwo: currentGame.playerTwo || null,
+          playerOne: {...this.state.playerOne, username: currentGame.playerOne},
+          playerTwo: {...this.state.playerTwo, username: currentGame.playerTwo || null},
           gameLetters: currentGame.gameLetters,
           gameID: gameID
         });
@@ -122,30 +127,40 @@ class Main extends React.Component {
 
   handleWordSubmit (e) {
     e.preventDefault();
-    const submittedWord = e.target.word.value.toLowerCase();
 
+    const player = e.target.name;
+    const submittedWord = e.target.word.value.toLowerCase();
     const tooShortMsg = "Your word must contain at least two letters. Please try again."
     const wrongCharMsg = "You may only use the provided letters. Please try again."
     const notUniqueCharMsg = "You can use each letter only once. Please try again."
     const notUniqueWordMsg = "You've already submitted that word. Please try again."
 
-    //check if string is empty or too short
+    // check if string is empty or too short
     if (submittedWord.length <= 1) {
-      this.setState({errorMsg: tooShortMsg});
+      this.setState({
+        [player]: {...this.state[player], errorMsg: tooShortMsg}
+      });
     // check only given letters are used
     } else if (!this.hasOnlyGivenChars(submittedWord)) {
-      this.setState({errorMsg: wrongCharMsg});
+      this.setState({
+        [player]: {...this.state[player], errorMsg: wrongCharMsg}
+      });
     // check that each letter is used only once
     } else if (!this.isUnique(submittedWord)) {
-      this.setState({errorMsg: notUniqueCharMsg});
+      this.setState({
+        [player]: {...this.state[player], errorMsg: notUniqueCharMsg}
+      });
     // check to see if word was already submitted
-    } else if (this.state.submittedWords.includes(submittedWord)) {
-      this.setState({errorMsg: notUniqueWordMsg});
+    } else if (this.state[player].submittedWords.includes(submittedWord)) {
+      this.setState({
+        [player]: {...this.state[player], errorMsg: notUniqueWordMsg}
+      });
     // submit valid word
     } else {
       this.setState({
-        submittedWords: [...this.state.submittedWords, submittedWord],
-        errorMsg: ''
+        [player]: {...this.state[player], 
+          submittedWords: [...this.state[player].submittedWords, submittedWord], 
+          errorMsg: ''},
       });
     }
   }
@@ -174,11 +189,12 @@ class Main extends React.Component {
           gameStarted={this.state.gameStarted}
           gameLetters={this.state.gameLetters}
           wordSubmit={this.handleWordSubmit}
-          errorMsg={this.state.errorMsg}
-          playerOne={this.state.playerOne}
-          playerTwo={this.state.playerTwo}
-          playerOneWords={this.state.playerOneWords}
-          playerTwoWords={this.state.playerTwoWords}
+          playerOne={this.state.playerOne.username}
+          playerOneWords={this.state.playerOne.submittedWords}
+          playerOneErrMsg={this.state.playerOne.errorMsg}
+          playerTwo={this.state.playerTwo.username}
+          playerTwoWords={this.state.playerTwo.submittedWords}
+          playerTwoErrMsg={this.state.playerTwo.errorMsg}
           gameID={this.state.gameID}
         />
     )
