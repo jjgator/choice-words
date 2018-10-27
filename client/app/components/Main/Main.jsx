@@ -10,7 +10,9 @@ class Main extends React.Component {
       gameID: null,
       loggedIn: false,
       gameLetters: [],
+      inputVal: '',
       gameStarted: false,
+      gameEnded: false,
       playerOne: {
         username: null,
         submittedWords: [],
@@ -26,8 +28,10 @@ class Main extends React.Component {
     this.getGameLetters = this.getGameLetters.bind(this);
     this.getRandomIndex = this.getRandomIndex.bind(this);
     this.handleWordSubmit = this.handleWordSubmit.bind(this);
+    this.handleWordInputChange = this.handleWordInputChange.bind(this);
     this.isUnique = this.isUnique.bind(this);
     this.hasOnlyGivenChars = this.hasOnlyGivenChars.bind(this);
+    this.startGame = this.startGame.bind(this);
   }
 
   async componentDidMount () {
@@ -49,7 +53,9 @@ class Main extends React.Component {
         this.setState({
           playerOne: {...this.state.playerOne, username: newGame.playerOne || null},
           playerTwo: {...this.state.playerTwo, username: newGame.playerTwo || null},
-          gameLetters: newGame.gameLetters
+          gameLetters: newGame.gameLetters,
+          gameStarted: newGame.gameStarted || false,
+          gameEnded: newGame.gameEnded || false
         });
       });
     // if gameID exists, user must be second player
@@ -64,7 +70,9 @@ class Main extends React.Component {
           playerOne: {...this.state.playerOne, username: currentGame.playerOne},
           playerTwo: {...this.state.playerTwo, username: currentGame.playerTwo || null},
           gameLetters: currentGame.gameLetters,
-          gameID: gameID
+          gameID: gameID,
+          gameStarted: currentGame.gameStarted || false,
+          gameEnded: currentGame.gameEnded || false
         });
       });
     }
@@ -125,6 +133,26 @@ class Main extends React.Component {
     return gameLetters;
   };
 
+  startGame () {
+    const gameID = this.state.gameID;
+    const gameRef = firebase.database().ref(`/games/${gameID}`);
+    const endGame = () => {
+      gameRef.update({
+        gameEnded: true
+      });
+    };
+
+    gameRef.update({
+      gameStarted: true
+    });
+    setTimeout(endGame, 60000);
+  }
+
+  handleWordInputChange (e) {
+    e.preventDefault();
+    this.setState({inputVal: e.target.value});
+  }
+
   handleWordSubmit (e) {
     e.preventDefault();
 
@@ -135,6 +163,7 @@ class Main extends React.Component {
     const notUniqueCharMsg = "You can use each letter only once. Please try again."
     const notUniqueWordMsg = "You've already submitted that word. Please try again."
 
+    this.setState({inputVal: submittedWord});
     // check if string is empty or too short
     if (submittedWord.length <= 1) {
       this.setState({
@@ -161,6 +190,7 @@ class Main extends React.Component {
         [player]: {...this.state[player], 
           submittedWords: [...this.state[player].submittedWords, submittedWord], 
           errorMsg: ''},
+        inputVal: ''
       });
     }
   }
@@ -187,15 +217,15 @@ class Main extends React.Component {
         </div>
       : <Game 
           gameStarted={this.state.gameStarted}
+          gameEnded={this.state.gameEnded}
           gameLetters={this.state.gameLetters}
           wordSubmit={this.handleWordSubmit}
-          playerOne={this.state.playerOne.username}
-          playerOneWords={this.state.playerOne.submittedWords}
-          playerOneErrMsg={this.state.playerOne.errorMsg}
-          playerTwo={this.state.playerTwo.username}
-          playerTwoWords={this.state.playerTwo.submittedWords}
-          playerTwoErrMsg={this.state.playerTwo.errorMsg}
+          playerOne={this.state.playerOne}
+          playerTwo={this.state.playerTwo}
           gameID={this.state.gameID}
+          startGame={this.startGame}
+          inputVal={this.state.inputVal}
+          handleWordInputChange={this.handleWordInputChange}
         />
     )
   }

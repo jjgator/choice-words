@@ -9,9 +9,12 @@ const Player = (props) => {
     ? <div className="player">
         <p>{props.username}</p>
         <form onSubmit={props.wordSubmit} name={props.player}>
-          <input name="word">
-          </input>
-          <Button buttonText="Enter"/>
+          <input 
+            name="word" 
+            value={props.inputVal} 
+            onChange={props.handleChange}
+          />
+          <Button buttonText="Enter" disabled={props.gameStarted === false || props.gameEnded === true}/>
         </form>
         <span className="errmsg">{props.errorMsg}</span>
         <div>{
