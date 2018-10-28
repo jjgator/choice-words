@@ -12,7 +12,7 @@ const Game = (props) => {
             buttonText="Start Game"
             onClick={props.startGame}
             // start game button disabled until player two joins
-            disabled={props.playerTwo}
+            disabled={props.playerTwo.username}
           />
           : <Letters gameLetters={props.gameLetters}/>
         }
@@ -26,7 +26,7 @@ const Game = (props) => {
           username={props.playerOne.username}
           gameStarted={props.gameStarted}
           gameEnded={props.gameEnded}
-          inputVal={props.inputVal}
+          inputVal={props.playerOne.inputVal}
           handleChange={props.handleWordInputChange}
         />
         <Player 
@@ -38,7 +38,7 @@ const Game = (props) => {
           gameStarted={props.gameStarted}
           gameEnded={props.gameEnded}
           gameID={props.gameID}
-          inputVal={props.inputVal}
+          inputVal={props.playerTwo.inputVal}
           handleChange={props.handleWordInputChange}
 
         />

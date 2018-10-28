@@ -10,18 +10,19 @@ class Main extends React.Component {
       gameID: null,
       loggedIn: false,
       gameLetters: [],
-      inputVal: '',
       gameStarted: false,
       gameEnded: false,
       playerOne: {
         username: null,
         submittedWords: [],
-        errorMsg: ''
+        errorMsg: '',
+        inputVal: ''
       },
       playerTwo: {
         username: null,
         submittedWords: [],
-        errorMsg: ''
+        errorMsg: '',
+        inputVal: ''
       }
     };
     this.createOrJoinGame = this.createOrJoinGame.bind(this);
@@ -29,8 +30,9 @@ class Main extends React.Component {
     this.getRandomIndex = this.getRandomIndex.bind(this);
     this.handleWordSubmit = this.handleWordSubmit.bind(this);
     this.handleWordInputChange = this.handleWordInputChange.bind(this);
-    this.isUnique = this.isUnique.bind(this);
+    this.isUniqueWord = this.isUniqueWord.bind(this);
     this.hasOnlyGivenChars = this.hasOnlyGivenChars.bind(this);
+    this.hasOnlyUniqueChars = this.hasOnlyUniqueChars.bind(this);
     this.startGame = this.startGame.bind(this);
   }
 
@@ -148,9 +150,12 @@ class Main extends React.Component {
     setTimeout(endGame, 60000);
   }
 
-  handleWordInputChange (e) {
+  handleWordInputChange (player, e) {
     e.preventDefault();
-    this.setState({inputVal: e.target.value});
+
+    this.setState({
+      [player]: {...this.state[player], inputVal: e.target.value}
+    });
   }
 
   handleWordSubmit (e) {
@@ -161,9 +166,11 @@ class Main extends React.Component {
     const tooShortMsg = "Your word must contain at least two letters. Please try again."
     const wrongCharMsg = "You may only use the provided letters. Please try again."
     const notUniqueCharMsg = "You can use each letter only once. Please try again."
-    const notUniqueWordMsg = "You've already submitted that word. Please try again."
+    const notUniqueWordMsg = "That word has already been submitted by you or your opponent. Please try again."
 
-    this.setState({inputVal: submittedWord});
+    this.setState({
+      [player]: {...this.state[player], inputVal: submittedWord}
+    });
     // check if string is empty or too short
     if (submittedWord.length <= 1) {
       this.setState({
@@ -175,12 +182,12 @@ class Main extends React.Component {
         [player]: {...this.state[player], errorMsg: wrongCharMsg}
       });
     // check that each letter is used only once
-    } else if (!this.isUnique(submittedWord)) {
+    } else if (!this.hasOnlyUniqueChars(submittedWord)) {
       this.setState({
         [player]: {...this.state[player], errorMsg: notUniqueCharMsg}
       });
-    // check to see if word was already submitted
-    } else if (this.state[player].submittedWords.includes(submittedWord)) {
+    // check to see if word was already submitted by either player
+    } else if (!this.isUniqueWord(submittedWord)) {
       this.setState({
         [player]: {...this.state[player], errorMsg: notUniqueWordMsg}
       });
@@ -190,7 +197,7 @@ class Main extends React.Component {
         [player]: {...this.state[player], 
           submittedWords: [...this.state[player].submittedWords, submittedWord], 
           errorMsg: ''},
-        inputVal: ''
+          inputVal: ''
       });
     }
   }
@@ -224,7 +231,6 @@ class Main extends React.Component {
           playerTwo={this.state.playerTwo}
           gameID={this.state.gameID}
           startGame={this.startGame}
-          inputVal={this.state.inputVal}
           handleWordInputChange={this.handleWordInputChange}
         />
     )
@@ -238,7 +244,7 @@ class Main extends React.Component {
 
   // helper function for handleWordSubmit, 
   // checks for repeating letters
-  isUnique (string) {
+  hasOnlyUniqueChars (string) {
     return (string === [...new Set(string)].join(''));
   }
 
@@ -251,6 +257,21 @@ class Main extends React.Component {
       if (!this.state.gameLetters.includes(string.charAt(i))) {
         result = false;
       }
+    }
+
+    return result;
+  }
+
+  // helper function for handleWordSubmit, 
+  // checks if word has already been submitted by either player
+  isUniqueWord (string) {
+    let result = true;
+
+    if (
+      this.state.playerOne.submittedWords.includes(string) 
+      || this.state.playerTwo.submittedWords.includes(string)
+    ) {
+      result = false;
     }
 
     return result;

@@ -2,7 +2,6 @@ import React from 'react';
 import Button from '../Button/Button.jsx';
 import path from 'path';
 
-
 const Player = (props) => {
   return (
     props.username !== null 
@@ -12,7 +11,7 @@ const Player = (props) => {
           <input 
             name="word" 
             value={props.inputVal} 
-            onChange={props.handleChange}
+            onChange={(e) => {props.handleChange(props.player, e)}}
           />
           <Button buttonText="Enter" disabled={props.gameStarted === false || props.gameEnded === true}/>
         </form>
