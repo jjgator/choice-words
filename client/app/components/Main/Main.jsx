@@ -53,13 +53,20 @@ class Main extends React.Component {
         const newGame = snapshot.val();
 
         this.setState({
-          playerOne: {...this.state.playerOne, username: newGame.playerOne || null},
-          playerTwo: {...this.state.playerTwo, username: newGame.playerTwo || null},
+          playerOne: {...this.state.playerOne, 
+            username: newGame.playerOne || null,
+            submittedWords: newGame.playerOneWords || []
+          },
+          playerTwo: {...this.state.playerTwo, 
+            username: newGame.playerTwo || null,
+            submittedWords: newGame.playerTwoWords || []
+          },
           gameLetters: newGame.gameLetters,
           gameStarted: newGame.gameStarted || false,
           gameEnded: newGame.gameEnded || false
         });
       });
+
     // if gameID exists, user must be second player
     } else {
       // pull game data from db
@@ -69,8 +76,14 @@ class Main extends React.Component {
         const currentGame = snapshot.val();
 
         this.setState({
-          playerOne: {...this.state.playerOne, username: currentGame.playerOne},
-          playerTwo: {...this.state.playerTwo, username: currentGame.playerTwo || null},
+          playerOne: {...this.state.playerOne, 
+            username: currentGame.playerOne,
+            submittedWords: currentGame.playerOneWords || []
+          },
+          playerTwo: {...this.state.playerTwo, 
+            username: currentGame.playerTwo || null,
+            submittedWords: currentGame.playerTwoWords || []
+          },
           gameLetters: currentGame.gameLetters,
           gameID: gameID,
           gameStarted: currentGame.gameStarted || false,
@@ -85,19 +98,20 @@ class Main extends React.Component {
     const user = e.target.username.value;
     const gameID = this.state.gameID;
     const gameRef = firebase.database().ref(`/games/${gameID}`);
+    const playerOneRef = firebase.database().ref(`/games/${gameID}/playerOne`);
     // check for empty input
     if (user.length > 0) {
-      firebase.database().ref(`/games/${gameID}/playerOne`).once('value', snapshot => {
+      playerOneRef.once('value', snapshot => {
         // if player one already exists
         if (snapshot.exists()) {
           gameRef.update({
-            playerTwo: user
+            playerTwo: user,
           });
           this.setState({loggedIn: true});
         // else if player one does not exist
         } else {
           gameRef.update({
-            playerOne: user
+            playerOne: user,
           });
           this.setState({
             loggedIn: true,
@@ -147,7 +161,7 @@ class Main extends React.Component {
     gameRef.update({
       gameStarted: true
     });
-    setTimeout(endGame, 60000);
+    // setTimeout(endGame, 60000);
   }
 
   handleWordInputChange (player, e) {
@@ -163,10 +177,11 @@ class Main extends React.Component {
 
     const player = e.target.name;
     const submittedWord = e.target.word.value.toLowerCase();
-    const tooShortMsg = "Your word must contain at least two letters. Please try again."
-    const wrongCharMsg = "You may only use the provided letters. Please try again."
-    const notUniqueCharMsg = "You can use each letter only once. Please try again."
-    const notUniqueWordMsg = "That word has already been submitted by you or your opponent. Please try again."
+    const tooShortMsg = "Your word must contain at least two letters. Please try again.";
+    const wrongCharMsg = "You may only use the provided letters. Please try again.";
+    const notUniqueCharMsg = "You can use each letter only once. Please try again.";
+    const notUniqueWordMsg = "That word has already been submitted by you or your opponent. Please try again.";
+    const gameID = this.state.gameID;
 
     this.setState({
       [player]: {...this.state[player], inputVal: submittedWord}
@@ -176,7 +191,7 @@ class Main extends React.Component {
       this.setState({
         [player]: {...this.state[player], errorMsg: tooShortMsg}
       });
-    // check only given letters are used
+    // check that only given letters are used
     } else if (!this.hasOnlyGivenChars(submittedWord)) {
       this.setState({
         [player]: {...this.state[player], errorMsg: wrongCharMsg}
@@ -186,18 +201,29 @@ class Main extends React.Component {
       this.setState({
         [player]: {...this.state[player], errorMsg: notUniqueCharMsg}
       });
-    // check to see if word was already submitted by either player
+    // check if word was already submitted by either player
     } else if (!this.isUniqueWord(submittedWord)) {
       this.setState({
         [player]: {...this.state[player], errorMsg: notUniqueWordMsg}
       });
     // submit valid word
     } else {
+      const playerWordsRef = firebase.database().ref(`/games/${gameID}/${player + 'Words'}`);
+      
+      // add word to db
+      playerWordsRef.once('value', snapshot => {
+        let list = snapshot.val() || [];
+
+        list.push(submittedWord);
+        playerWordsRef.set(list);
+      });
+
       this.setState({
         [player]: {...this.state[player], 
-          submittedWords: [...this.state[player].submittedWords, submittedWord], 
-          errorMsg: ''},
-          inputVal: ''
+          errorMsg: '',
+          inputVal: '',
+          submittedWords: [...this.state[player].submittedWords, submittedWord],
+        }
       });
     }
   }
@@ -252,13 +278,11 @@ class Main extends React.Component {
   // ensures only characters in letterset are used
   hasOnlyGivenChars (string) {
     let result = true;
-
     for (let i = 0; i < string.length; i++) {
       if (!this.state.gameLetters.includes(string.charAt(i))) {
         result = false;
       }
     }
-
     return result;
   }
 
@@ -266,14 +290,12 @@ class Main extends React.Component {
   // checks if word has already been submitted by either player
   isUniqueWord (string) {
     let result = true;
-
     if (
       this.state.playerOne.submittedWords.includes(string) 
       || this.state.playerTwo.submittedWords.includes(string)
     ) {
       result = false;
     }
-
     return result;
   }
 }
