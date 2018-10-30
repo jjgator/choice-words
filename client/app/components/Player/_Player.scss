@@ -9,3 +9,9 @@
 	width: 200px;
 	background-color: #ccc;
 }
+
+form {
+	&.hide {
+		display: none;
+	}
+}

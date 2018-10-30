@@ -9,6 +9,7 @@ class Main extends React.Component {
     this.state = {
       gameID: null,
       loggedIn: false,
+      activePlayer: null,
       gameLetters: [],
       gameStarted: false,
       gameEnded: false,
@@ -61,6 +62,7 @@ class Main extends React.Component {
             username: newGame.playerTwo || null,
             submittedWords: newGame.playerTwoWords || []
           },
+          activePlayer: "playerOne",
           gameLetters: newGame.gameLetters,
           gameStarted: newGame.gameStarted || false,
           gameEnded: newGame.gameEnded || false
@@ -84,6 +86,7 @@ class Main extends React.Component {
             username: currentGame.playerTwo || null,
             submittedWords: currentGame.playerTwoWords || []
           },
+          activePlayer: "playerTwo",
           gameLetters: currentGame.gameLetters,
           gameID: gameID,
           gameStarted: currentGame.gameStarted || false,
@@ -161,6 +164,7 @@ class Main extends React.Component {
     gameRef.update({
       gameStarted: true
     });
+    // TODO: uncomment next line after development
     // setTimeout(endGame, 60000);
   }
 
@@ -255,6 +259,7 @@ class Main extends React.Component {
           wordSubmit={this.handleWordSubmit}
           playerOne={this.state.playerOne}
           playerTwo={this.state.playerTwo}
+          activePlayer={this.state.activePlayer}
           gameID={this.state.gameID}
           startGame={this.startGame}
           handleWordInputChange={this.handleWordInputChange}

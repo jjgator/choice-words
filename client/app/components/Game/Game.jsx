@@ -9,11 +9,11 @@ const Game = (props) => {
       <div className="game-header">
         {props.gameStarted === false 
           ? <Button 
-            buttonText="Start Game"
-            onClick={props.startGame}
-            // start game button disabled until player two joins
-            disabled={props.playerTwo.username}
-          />
+              buttonText="Start Game"
+              onClick={props.startGame}
+              // start game button disabled until player two joins
+              disabled={props.playerTwo.username}
+            />
           : <Letters gameLetters={props.gameLetters}/>
         }
       </div>
@@ -28,6 +28,7 @@ const Game = (props) => {
           gameEnded={props.gameEnded}
           inputVal={props.playerOne.inputVal}
           handleChange={props.handleWordInputChange}
+          hideInput={props.activePlayer === "playerTwo" ? true : false}
         />
         <Player 
           player="playerTwo"
@@ -40,7 +41,7 @@ const Game = (props) => {
           gameID={props.gameID}
           inputVal={props.playerTwo.inputVal}
           handleChange={props.handleWordInputChange}
-
+          hideInput={props.activePlayer === "playerOne" ? true : false}
         />
       </div>
     </div>

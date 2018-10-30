@@ -7,7 +7,10 @@ const Player = (props) => {
     props.username !== null 
     ? <div className="player">
         <p>{props.username}</p>
-        <form onSubmit={props.wordSubmit} name={props.player}>
+        <form 
+          onSubmit={props.wordSubmit} 
+          name={props.player} 
+          className={props.hideInput === true ? "hide" : "show"}>
           <input 
             name="word" 
             value={props.inputVal} 
