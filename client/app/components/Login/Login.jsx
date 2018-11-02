@@ -6,7 +6,7 @@ const Login = (props) => {
     <div className="login">
       <h4>Choice Words</h4>
       <div className="border"></div>
-      <p>Race your opponent to create as many words as possible in one minute!</p>
+      <p>Race your opponent to create as many words<br/>as possible in one minute!</p>
       <form onSubmit={props.onSubmit} className="login-form">
         <label>Enter a username:
           <input name="username">
