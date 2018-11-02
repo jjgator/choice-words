@@ -1,6 +1,6 @@
 import React from 'react';
-import Button from '../Button/Button.jsx';
 import Game from '../Game/Game.jsx';
+import Login from '../Login/Login.jsx';
 import firebase from '../../firebase.js';
 
 class Main extends React.Component {
@@ -234,23 +234,11 @@ class Main extends React.Component {
   render () {
     return (
       this.state.loggedIn === false 
-      ? <div>
-          <form onSubmit={this.createOrJoinGame}>
-            <label>Enter your username:
-              <input name="username">
-              </input><br/>
-            </label>
-            <Button 
-              type="start-game-button"
-              disabled={this.state.gameID}
-              buttonText={
-                this.props.match.params.game_id === undefined 
-                ? "Start New Game"
-                : "Join Game"
-              }
-           />
-          </form>
-        </div>
+      ? <Login 
+          onSubmit={this.createOrJoinGame}
+          gameID={this.state.gameID}
+          params={this.props.match.params.game_id}
+        />
       : <Game 
           gameStarted={this.state.gameStarted}
           gameEnded={this.state.gameEnded}

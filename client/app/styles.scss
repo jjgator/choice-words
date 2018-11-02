@@ -1,7 +1,18 @@
-@import './components/Header/Header';
-@import './components/Main/Main';
-@import './components/Button/Button';
-@import './components/Game/Game';
-@import './components/Player/Player';
+@import './components/Main/main';
+@import './components/Button/button';
+@import './components/Game/game';
+@import './components/Player/player';
+@import './components/Login/login';
 
+
+html, body {
+	font-family: 'Open Sans', sans-serif;
+}
+
+.flex-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100vh;
+}
 
