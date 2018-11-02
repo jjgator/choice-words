@@ -164,8 +164,7 @@ class Main extends React.Component {
     gameRef.update({
       gameStarted: true
     });
-    // TODO: uncomment next line after development
-    // setTimeout(endGame, 60000);
+    setTimeout(endGame, 60000);
   }
 
   handleWordInputChange (player, e) {
@@ -226,7 +225,7 @@ class Main extends React.Component {
         [player]: {...this.state[player], 
           errorMsg: '',
           inputVal: '',
-          submittedWords: [...this.state[player].submittedWords, submittedWord],
+          submittedWords: [...this.state[player].submittedWords, submittedWord]
         }
       });
     }
