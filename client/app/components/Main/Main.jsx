@@ -9,7 +9,6 @@ class Main extends React.Component {
     this.state = {
       gameID: null,
       loggedIn: false,
-      activePlayer: null,
       gameLetters: [],
       gameStarted: false,
       gameEnded: false,
@@ -17,13 +16,15 @@ class Main extends React.Component {
         username: null,
         submittedWords: [],
         errorMsg: '',
-        inputVal: ''
+        inputVal: '',
+        score: 0
       },
       playerTwo: {
         username: null,
         submittedWords: [],
         errorMsg: '',
-        inputVal: ''
+        inputVal: '',
+        score: 0
       }
     };
     this.createOrJoinGame = this.createOrJoinGame.bind(this);
@@ -56,11 +57,13 @@ class Main extends React.Component {
         this.setState({
           playerOne: {...this.state.playerOne, 
             username: newGame.playerOne || null,
-            submittedWords: newGame.playerOneWords || []
+            submittedWords: newGame.playerOneWords || [],
+            score: newGame.playerOneScore || 0
           },
           playerTwo: {...this.state.playerTwo, 
             username: newGame.playerTwo || null,
-            submittedWords: newGame.playerTwoWords || []
+            submittedWords: newGame.playerTwoWords || [],
+            score: newGame.playerTwoScore || 0
           },
           activePlayer: "playerOne",
           gameLetters: newGame.gameLetters,
@@ -80,11 +83,13 @@ class Main extends React.Component {
         this.setState({
           playerOne: {...this.state.playerOne, 
             username: currentGame.playerOne,
-            submittedWords: currentGame.playerOneWords || []
+            submittedWords: currentGame.playerOneWords || [],
+            score: currentGame.playerOneScore || 0
           },
           playerTwo: {...this.state.playerTwo, 
             username: currentGame.playerTwo || null,
-            submittedWords: currentGame.playerTwoWords || []
+            submittedWords: currentGame.playerTwoWords || [],
+            score: currentGame.playerTwoScore || 0
           },
           activePlayer: "playerTwo",
           gameLetters: currentGame.gameLetters,
@@ -104,23 +109,28 @@ class Main extends React.Component {
     const playerOneRef = firebase.database().ref(`/games/${gameID}/playerOne`);
     // check for empty input
     if (user.length > 0) {
-      playerOneRef.once('value', snapshot => {
-        // if player one already exists
-        if (snapshot.exists()) {
-          gameRef.update({
-            playerTwo: user,
-          });
-          this.setState({loggedIn: true});
-        // else if player one does not exist
-        } else {
-          gameRef.update({
-            playerOne: user,
-          });
-          this.setState({
-            loggedIn: true,
-          });
-        }
-      });
+      // check for spaces, tabs or line breaks in input
+      if (user.replace(/\s/g, '').length) {
+        playerOneRef.once('value', snapshot => {
+          // if player one already exists
+          if (snapshot.exists()) {
+            gameRef.update({
+              playerTwo: user,
+            });
+            this.setState({loggedIn: true});
+          // else if player one does not exist
+          } else {
+            gameRef.update({
+              playerOne: user,
+            });
+            this.setState({
+              loggedIn: true,
+            });
+          }
+        });
+      } else {
+        alert("Your username cannot contain any spaces. Please try again.");
+      }
     } else {
       alert("You must enter a username to play the game.");
     }
@@ -164,7 +174,8 @@ class Main extends React.Component {
     gameRef.update({
       gameStarted: true
     });
-    setTimeout(endGame, 60000);
+    // TODO: uncomment next line after debugging
+    // setTimeout(endGame, 60000);
   }
 
   handleWordInputChange (player, e) {
@@ -212,7 +223,8 @@ class Main extends React.Component {
     // submit valid word
     } else {
       const playerWordsRef = firebase.database().ref(`/games/${gameID}/${player + 'Words'}`);
-      
+      const playerScoreRef = firebase.database().ref(`/games/${gameID}/${player + 'Score'}`);
+      let score = 0;
       // add word to db
       playerWordsRef.once('value', snapshot => {
         let list = snapshot.val() || [];
@@ -220,11 +232,18 @@ class Main extends React.Component {
         list.push(submittedWord);
         playerWordsRef.set(list);
       });
+      // update score
+      playerScoreRef.once('value', snapshot => {
+        score = snapshot.val() || 0;
+        score += submittedWord.length;
+        playerScoreRef.set(score);
+      });
 
       this.setState({
         [player]: {...this.state[player], 
           errorMsg: '',
           inputVal: '',
+          score: score,
           submittedWords: [...this.state[player].submittedWords, submittedWord]
         }
       });

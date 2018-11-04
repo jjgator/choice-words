@@ -1,17 +1,63 @@
 .player {
   display: flex;
-  flex: 1; /* makes each player box the same size/height */
-  flex-direction: column; /* makes the content in the player box go from top to bottom */
+  flex: 1;
+  flex-direction: column;
   margin: 35px;
 	padding: 20px;
-	border: 1px solid blue;
-	height: 400px;
-	width: 200px;
-	background-color: #ccc;
-}
+	min-height: 400px;
+	width: 250px;
+	box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.16), 0 0 0 1px rgba(0, 0, 0, 0.08);
+	background-color: white;
+	font-size: 14px;
+	border-radius: 5px;
+	word-break: break-word;
 
-form {
-	&.hide {
-		display: none;
+	.username {
+		display: flex;
+		font-weight: bold;
+		margin-top: 0;
+		border: 1px solid #ebebeb;
+		height: 30px;
+		padding: 8px;
+		border-radius: 2px;
+		background: #ebebeb;
+		justify-content: space-between;
+		align-items: center;
+
+		.score {
+			font-size: 16px;
+			font-weight: bold;
+			color: #3b9096;
+		}
+
+		.word-list {
+			font-size: 13px;
+		}
+	}
+
+	form {
+		display: flex;
+		justify-content: space-between;
+
+		&.hide {
+			visibility: hidden;
+		}
+
+		input {
+			height: 30px;
+	    width: 75%;
+	    border-radius: 3px;
+	    border: 1px solid transparent;
+	    border-top: none;
+	    border-bottom: 1px solid #DDD;
+	    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.39), 0 -1px 1px #FFF, 0 1px 0 #FFF;
+		}
+
+		button {
+	    background-color: #3b9096;
+	    color: white;
+	    width: 22%;
+	    font-size: 12px;
+		}
 	}
 }

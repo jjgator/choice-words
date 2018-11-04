@@ -3,10 +3,12 @@
 @import './components/Game/game';
 @import './components/Player/player';
 @import './components/Login/login';
-
+@import './components/Letters/letters';
+@import './components/Letter/letter';
 
 html, body {
 	font-family: 'Open Sans', sans-serif;
+	background-color: #f3f3f3;
 }
 
 .flex-container {

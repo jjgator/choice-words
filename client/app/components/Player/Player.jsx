@@ -6,7 +6,9 @@ const Player = (props) => {
   return (
     props.username !== null 
     ? <div className="player">
-        <p>{props.username}</p>
+        <p className="username">
+          {props.username}<span className="score">{props.score}</span>
+        </p>
         <form 
           onSubmit={props.wordSubmit} 
           name={props.player} 
@@ -19,7 +21,7 @@ const Player = (props) => {
           <Button buttonText="Enter" disabled={props.gameStarted === false || props.gameEnded === true}/>
         </form>
         <span className="errmsg">{props.errorMsg}</span>
-        <div>{
+        <div className="word-list">{
           props.submittedWords.map((word, i) => {
             return <div key={i}><span>{word + ' '}</span><br/></div>
           })

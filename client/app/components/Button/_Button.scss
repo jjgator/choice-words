@@ -2,6 +2,8 @@ button {
   background-color: #3b9096;
   border-radius: 3px;
   color: white;
+  box-shadow: 0 5px 15px #b7b7b7;
+  
   &:disabled {
   	opacity: 0.5;
   }

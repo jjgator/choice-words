@@ -5,18 +5,20 @@ import Player from '../Player/Player.jsx';
 
 const Game = (props) => {
   return (
-    <div>
-      <div className="game-header">
-        {props.gameStarted === false 
-          ? <Button 
-              buttonText="Start Game"
-              onClick={props.startGame}
-              // start game button disabled until player two joins
-              disabled={props.playerTwo.username}
-            />
-          : <Letters gameLetters={props.gameLetters}/>
-        }
-      </div>
+    <div className="game-wrapper">
+      <h4>Choice Words</h4>
+      <div className="border"></div>
+      {props.gameStarted === false 
+        ? <Button 
+            type="start-game-button"
+            buttonText="Start Game"
+            onClick={props.startGame}
+            // start game button disabled until player two joins
+            // TODO: changed disabled value to {props.playerTwo.username} after dev
+            disabled={false}
+          />
+        : <Letters gameLetters={props.gameLetters}/>
+      }
       <div className="players-wrapper">
         <Player 
           player="playerOne"
@@ -24,6 +26,7 @@ const Game = (props) => {
           errorMsg={props.playerOne.errorMsg}
           submittedWords={props.playerOne.submittedWords}
           username={props.playerOne.username}
+          score={props.playerOne.score}
           gameStarted={props.gameStarted}
           gameEnded={props.gameEnded}
           inputVal={props.playerOne.inputVal}
@@ -36,6 +39,7 @@ const Game = (props) => {
           errorMsg={props.playerTwo.errorMsg}
           submittedWords={props.playerTwo.submittedWords}
           username={props.playerTwo.username}
+          score={props.playerTwo.score}
           gameStarted={props.gameStarted}
           gameEnded={props.gameEnded}
           gameID={props.gameID}
