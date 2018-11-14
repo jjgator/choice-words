@@ -2,6 +2,7 @@
 	display: flex;
   align-items: center;
   flex-direction: column;
+
 	h4 {
 		color: #3b9096;
 	  font-weight: bold;
@@ -10,18 +11,30 @@
 	} 
 
 	.border {
-		width: 40%;
+		width: 70%;
 		border-bottom: 1px solid #dcd6d6;
-		margin-bottom: 20px;
+		margin-bottom: 12px;
 	}
-
+		
 	.start-game-button {
-		padding: 12px 20px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
 		font-size: 18px;
-		width: 30%;
+		width: 160px;
+		height: 50px;
 	}
-
+	
 	.players-wrapper {
 	  display: flex;
+	  margin-top: -20px;
+	}
+
+	.placeholder {
+		height: 50px;
+	}
+
+	.timer {
+		height: 50px;
 	}
 }

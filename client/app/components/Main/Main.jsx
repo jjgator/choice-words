@@ -11,6 +11,7 @@ class Main extends React.Component {
       loggedIn: false,
       gameLetters: [],
       gameStarted: false,
+      timeRemaining: 60,
       gameEnded: false,
       playerOne: {
         username: null,
@@ -36,6 +37,7 @@ class Main extends React.Component {
     this.hasOnlyGivenChars = this.hasOnlyGivenChars.bind(this);
     this.hasOnlyUniqueChars = this.hasOnlyUniqueChars.bind(this);
     this.startGame = this.startGame.bind(this);
+    this.timeFormatter = this.timeFormatter.bind(this);
   }
 
   async componentDidMount () {
@@ -165,7 +167,15 @@ class Main extends React.Component {
   startGame () {
     const gameID = this.state.gameID;
     const gameRef = firebase.database().ref(`/games/${gameID}`);
+    const clock = () => {
+      this.setState({timeRemaining: this.state.timeRemaining - 1});
+    }
+    // start timer
+    const timer = setInterval(clock, 1000);
+    const stopTimer = () => {clearInterval(timer)};
     const endGame = () => {
+      // stop timer
+      stopTimer();
       gameRef.update({
         gameEnded: true
       });
@@ -174,8 +184,8 @@ class Main extends React.Component {
     gameRef.update({
       gameStarted: true
     });
-    // TODO: uncomment next line after debugging
-    // setTimeout(endGame, 60000);
+
+    setTimeout(endGame, 60000);
   }
 
   handleWordInputChange (player, e) {
@@ -268,6 +278,7 @@ class Main extends React.Component {
           activePlayer={this.state.activePlayer}
           gameID={this.state.gameID}
           startGame={this.startGame}
+          timeRemaining={this.timeFormatter(this.state.timeRemaining)}
           handleWordInputChange={this.handleWordInputChange}
         />
     )
@@ -308,6 +319,16 @@ class Main extends React.Component {
       result = false;
     }
     return result;
+  }
+
+  // keeps time format consistent for timer
+  timeFormatter (seconds) {
+    const currentTime = seconds.toString();
+    if (currentTime.length < 2) {
+      return '00:0' + currentTime;
+    } else {
+      return '00:' + currentTime;
+    }
   }
 }
 
