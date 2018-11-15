@@ -6,9 +6,8 @@ import Player from '../Player/Player.jsx';
 const Game = (props) => {
   return (
     <div className="game-wrapper">
-      <h4>Choice Words</h4>
-      <div className="border"></div>
-      <Letters gameLetters={props.gameLetters}/>
+      <div className="game-header">
+        <h4>Choice Words</h4>
         {props.gameStarted === false 
           ? <Button 
               type="start-game-button"
@@ -20,6 +19,12 @@ const Game = (props) => {
             />            
           : <span className="timer">{props.timeRemaining}</span> 
         }
+      </div>
+      <div className="border"></div>
+      <Letters 
+        gameLetters={props.gameLetters} 
+        gameStarted={props.gameStarted}
+      />
       <div className="players-wrapper">
         <Player 
           player="playerOne"

@@ -3,38 +3,48 @@
   align-items: center;
   flex-direction: column;
 
-	h4 {
-		color: #3b9096;
-	  font-weight: bold;
-	  font-size: 24px;
-	  margin: 15px 0;
-	} 
+	.game-header {
+		display: flex;
+    width: 70%;
+    justify-content: space-between;
+    padding-bottom: 10px;
+    align-items: flex-end;
+		
+		h4 {
+			color: #3b9096;
+		  font-weight: bold;
+		  font-size: 24px;
+		  margin: 0 0 0 10px;
+		} 
+
+		.start-game-button {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-size: 16px;
+	    width: 110px;
+	    height: 35px;		}
+
+		.timer {
+			height: 25px;
+			padding: 6px 8px;
+			margin-top: 10px;
+			font-weight: bold;
+			background-color: #bfbfbf;
+			border-radius: 3px;
+			border-top: 1px solid #DDD;
+			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.39), 0 -1px 1px #f3f3f3, 0 1px 0 #f3f3f3;
+		}
+	}
 
 	.border {
 		width: 70%;
 		border-bottom: 1px solid #dcd6d6;
 		margin-bottom: 12px;
 	}
-		
-	.start-game-button {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 18px;
-		width: 160px;
-		height: 50px;
-	}
 	
 	.players-wrapper {
 	  display: flex;
 	  margin-top: -20px;
-	}
-
-	.placeholder {
-		height: 50px;
-	}
-
-	.timer {
-		height: 50px;
 	}
 }
