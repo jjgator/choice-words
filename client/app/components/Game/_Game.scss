@@ -19,21 +19,15 @@
 
 		.start-game-button {
 			display: flex;
-			align-items: center;
-			justify-content: center;
-			font-size: 16px;
+	    align-items: center;
+	    justify-content: center;
+	    font-size: 14px;
 	    width: 110px;
-	    height: 35px;		}
+	    height: 35px;	
+	  }
 
 		.timer {
-			height: 25px;
-			padding: 6px 8px;
-			margin-top: 10px;
-			font-weight: bold;
-			background-color: #bfbfbf;
-			border-radius: 3px;
-			border-top: 1px solid #DDD;
-			box-shadow: 0 1px 2px rgba(0, 0, 0, 0.39), 0 -1px 1px #f3f3f3, 0 1px 0 #f3f3f3;
+			padding: 13px 8px 0px 0px;
 		}
 	}
 
