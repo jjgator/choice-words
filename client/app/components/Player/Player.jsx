@@ -20,7 +20,7 @@ const Player = (props) => {
           />
           <Button buttonText="Enter" disabled={props.gameStarted === false || props.gameEnded === true}/>
         </form>
-        <span className="errmsg">{props.errorMsg}</span>
+        <span className={props.errorMsg === '' ? "errmsg" : "errmsg show"}>{props.errorMsg}</span>
         <div className="word-list">{
           props.submittedWords.map((word, i) => {
             return <div key={i}><span>{word + ' '}</span><br/></div>

@@ -37,7 +37,7 @@ class Main extends React.Component {
     this.hasOnlyGivenChars = this.hasOnlyGivenChars.bind(this);
     this.hasOnlyUniqueChars = this.hasOnlyUniqueChars.bind(this);
     this.startGame = this.startGame.bind(this);
-    this.timeFormatter = this.timeFormatter.bind(this);
+    this.formatTime = this.formatTime.bind(this);
   }
 
   async componentDidMount () {
@@ -278,7 +278,7 @@ class Main extends React.Component {
           activePlayer={this.state.activePlayer}
           gameID={this.state.gameID}
           startGame={this.startGame}
-          timeRemaining={this.timeFormatter(this.state.timeRemaining)}
+          timeRemaining={this.formatTime(this.state.timeRemaining)}
           handleWordInputChange={this.handleWordInputChange}
         />
     )
@@ -322,7 +322,7 @@ class Main extends React.Component {
   }
 
   // keeps time format consistent for timer
-  timeFormatter (seconds) {
+  formatTime (seconds) {
     const currentTime = seconds.toString();
     if (currentTime.length < 2) {
       return '00:0' + currentTime;

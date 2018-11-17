@@ -29,10 +29,6 @@
 			font-weight: bold;
 			color: #3b9096;
 		}
-
-		.word-list {
-			font-size: 13px;
-		}
 	}
 
 	form {
@@ -59,5 +55,19 @@
 	    width: 22%;
 	    font-size: 12px;
 		}
+	}
+
+	.errmsg {
+		font-size: 12px;
+		margin-bottom: 10px;
+		height: 34px;
+
+		&.show {
+			background-color: #faffba;
+		}
+	}
+
+	.word-list {
+		font-size: 13px;
 	}
 }
